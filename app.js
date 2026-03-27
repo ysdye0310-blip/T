@@ -1,13 +1,14 @@
 const scoreElement = document.getElementById('score');
 const comboElement = document.getElementById('combo');
-const num1Element = document.getElementById('num1');
-const num2Element = document.getElementById('num2');
+const targetNumberElement = document.getElementById('target-number');
+const answerInput = document.getElementById('answer-input');
 const feedbackElement = document.getElementById('feedback');
-const buttons = document.querySelectorAll('.option-btn');
 const gameContainer = document.querySelector('.game-container');
+const submitBtn = document.getElementById('submit-btn');
 
 let currentScore = 0;
 let currentCombo = 0;
+let currentTarget = 0;
 let currentAnswer = 0;
 let isAnimating = false;
 
@@ -21,61 +22,50 @@ function initGame() {
 function generateQuestion() {
     isAnimating = false;
     
-    // 2~9단 생성
-    const num1 = Math.floor(Math.random() * 8) + 2; 
-    const num2 = Math.floor(Math.random() * 9) + 1;
+    // 1부터 9까지 랜덤 숫자 생성 (0이나 10은 너무 쉬워서 제외하기 위함)
+    currentTarget = Math.floor(Math.random() * 9) + 1;
+    currentAnswer = 10 - currentTarget;
     
-    currentAnswer = num1 * num2;
+    targetNumberElement.textContent = currentTarget;
     
-    num1Element.textContent = num1;
-    num2Element.textContent = num2;
+    // 주관식 입력창 초기화 및 마우스 포커싱!
+    answerInput.value = ''; 
+    answerInput.focus(); 
     
-    // 오답 생성 (정답과 비슷한 값들 위주로 배치하여 생각하게 만듦)
-    let options = new Set();
-    options.add(currentAnswer);
-    
-    while(options.size < 4) {
-        let wrongMod = Math.floor(Math.random() * 5) - 2; // -2, -1, 0, 1, 2
-        let randomWrong = currentAnswer + (wrongMod * num1); // 구구단 배수 기준 오답
-        
-        // 너무 똑같은 값 방지 및 양수 보장
-        if (randomWrong <= 0 || randomWrong === currentAnswer) {
-            randomWrong = currentAnswer + Math.floor(Math.random() * 10) + 1;
-        }
-        
-        options.add(randomWrong);
-    }
-    
-    // Set을 배열로 변환하고 랜덤하게 섞기
-    let optionsArray = Array.from(options);
-    optionsArray.sort(() => Math.random() - 0.5);
-    
-    // 버튼에 값 할당 및 클릭 이벤트 연결
-    buttons.forEach((btn, index) => {
-        btn.textContent = optionsArray[index];
-        btn.classList.remove('pressed'); // 이전 상태 초기화
-        btn.onclick = () => checkAnswer(optionsArray[index], btn);
-    });
-    
-    feedbackElement.textContent = "어느 것이 정답일까요? 🤔";
+    feedbackElement.textContent = "짝꿍수를 입력하고 엔터(Enter)나 확인 버튼을 누르세요! 🐶";
     feedbackElement.className = 'feedback';
+    submitBtn.classList.remove('pressed');
 }
 
-function checkAnswer(selected, btn) {
+// 폼(Enter키 혹은 확인 버튼) 제출 시 동작하는 함수
+function submitAnswer() {
     if (isAnimating) return;
+    
+    const userInputStr = answerInput.value.trim();
+    if (userInputStr === '') {
+        // 아무것도 안적고 엔터치면 무시
+        answerInput.focus();
+        return; 
+    }
+    
+    const userAnswer = parseInt(userInputStr, 10);
+    
+    if (isNaN(userAnswer)) {
+        answerInput.focus();
+        return; 
+    }
+    
     isAnimating = true;
+    submitBtn.classList.add('pressed');
     
-    btn.classList.add('pressed'); // 눌린 효과
-    
-    if (selected === currentAnswer) {
-        // --- 정답 ---
-        currentScore += 10 + (currentCombo * 2); // 콤보 시 보너스 추가
+    if (userAnswer === currentAnswer) {
+        // --- 정답 처리 ---
+        currentScore += 10 + (currentCombo * 5); // 콤보 보너스는 5점씩!
         currentCombo++;
         
-        feedbackElement.textContent = "딩동댕! 🎉 대단해! 🌟";
+        feedbackElement.textContent = "딩동댕! 🎉 완벽해요! 🌟";
         feedbackElement.className = 'feedback correct';
         
-        // 애니메이션 효과
         gameContainer.classList.add('pop');
         setTimeout(() => gameContainer.classList.remove('pop'), 500);
         
@@ -86,12 +76,11 @@ function checkAnswer(selected, btn) {
         }, 1200);
         
     } else {
-        // --- 오답 ---
+        // --- 오답 처리 ---
         currentCombo = 0;
-        feedbackElement.textContent = `앗, 틀렸어요! 정답은 ${currentAnswer} 😢`;
+        feedbackElement.textContent = `앗! ${currentTarget}의 짝꿍수는 ${currentAnswer}예요! 😥`;
         feedbackElement.className = 'feedback wrong';
         
-        // 오답 화면 흔들림 효과
         gameContainer.classList.add('shake');
         setTimeout(() => gameContainer.classList.remove('shake'), 400);
         
@@ -99,7 +88,7 @@ function checkAnswer(selected, btn) {
         
         setTimeout(() => {
             generateQuestion();
-        }, 1500);
+        }, 2500);
     }
 }
 
@@ -108,5 +97,19 @@ function updateScoreBoard() {
     comboElement.textContent = currentCombo;
 }
 
-// 스크립트 로드 시 게임 시작
-initGame();
+// 처음 열었을 때 포커싱
+window.addEventListener('DOMContentLoaded', () => {
+    initGame();
+});
+
+// 아이들이 실수로 다른 곳을 파란 바탕 등 바깥쪽을 클릭했을 때,
+// 바로 입력을 이어갈 수 있도록 항상 포커스를 입력창에 유지시켜주는 로직 (UX 향상)
+document.body.addEventListener('click', (e) => {
+    // 확인 버튼을 직접 누른 경우는 폼 제출이 되므로 간섭하지 않음
+    if (e.target !== submitBtn && e.target !== answerInput) {
+        // 애니메이션 중이 아닐 때만 강제 포커싱
+        if (!isAnimating) {
+            answerInput.focus();
+        }
+    }
+});
