@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍭 팡팡 구구단 게임! 🍭</title>
+    <!-- 귀여운 한글 폰트 Jua 로드 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <div class="score-board">
+                ⭐ 점수: <span id="score">0</span>
+            </div>
+            <div class="combo-board">
+                🔥 연속: <span id="combo">0</span>
+            </div>
+        </header>
+
+        <main class="game-main">
+            <h1 class="title">🌈 팡팡 구구단!</h1>
+            <div class="question-box" id="question-box">
+                <span id="num1">?</span> 
+                <span class="multiply">×</span> 
+                <span id="num2">?</span> 
+                <span class="equals">=</span> 
+                <span class="question-mark">?</span>
+            </div>
+            
+            <div class="options-container" id="options-container">
+                <button class="option-btn" id="btn-0"></button>
+                <button class="option-btn" id="btn-1"></button>
+                <button class="option-btn" id="btn-2"></button>
+                <button class="option-btn" id="btn-3"></button>
+            </div>
+        </main>
+
+        <footer class="game-footer">
+            <div class="feedback" id="feedback">시작해볼까요! 🚀</div>
+        </footer>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

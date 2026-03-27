@@ -1,0 +1,176 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Jua', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Animated Gradient Background */
+    background: linear-gradient(-45deg, #ff9a9e, #fecfef, #a1c4fd, #fbc2eb);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    overflow: hidden;
+    padding: 20px;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.game-container {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 500px;
+    border-radius: 30px;
+    padding: 30px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), inset 0 0 0 8px rgba(255, 255, 255, 0.7);
+    text-align: center;
+    border: 4px solid #fff;
+    transition: transform 0.2s;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #444;
+}
+
+.score-board {
+    background: #ffeaa7;
+    padding: 10px 20px;
+    border-radius: 20px;
+    box-shadow: 0 6px 0 #f5cd79;
+    border: 3px solid #fbc531;
+}
+
+.combo-board {
+    background: #ff7675;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    box-shadow: 0 6px 0 #d63031;
+    border: 3px solid #fab1a0;
+}
+
+.title {
+    font-size: 2.5rem;
+    color: #a29bfe;
+    text-shadow: 3px 3px 0px #6c5ce7;
+    margin-bottom: 25px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.question-box {
+    font-size: 4.5rem;
+    color: #2d3436;
+    background: #fff;
+    padding: 20px;
+    border-radius: 25px;
+    border: 5px dashed #74b9ff;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.multiply { color: #ff7675; font-size: 3.5rem; }
+.equals { color: #55efc4; font-size: 3.5rem; }
+.question-mark { color: #fdcb6e; animation: pulse 1.5s infinite; }
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.options-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.option-btn {
+    font-family: 'Jua', sans-serif;
+    font-size: 2.8rem;
+    padding: 20px;
+    border: none;
+    border-radius: 25px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+}
+
+/* 4개의 밝은 색상 버튼 디자인 */
+.option-btn:nth-child(1) { background: #fd79a8; box-shadow: 0 10px 0 #e84393; }
+.option-btn:nth-child(2) { background: #00cec9; box-shadow: 0 10px 0 #00b894; }
+.option-btn:nth-child(3) { background: #0984e3; box-shadow: 0 10px 0 #74b9ff; }
+.option-btn:nth-child(4) { background: #fdcb6e; box-shadow: 0 10px 0 #e17055; }
+
+.option-btn:active, .option-btn.pressed {
+    transform: translateY(10px);
+    box-shadow: 0 0 0 rgba(0,0,0,0) !important;
+}
+
+.option-btn:hover {
+    filter: brightness(1.1);
+}
+
+/* 정답/오답 애니메이션 클래스 */
+.shake {
+    animation: horizontal-shaking 0.4s;
+}
+
+@keyframes horizontal-shaking {
+    0% { transform: translateX(0) }
+    25% { transform: translateX(15px) }
+    50% { transform: translateX(-15px) }
+    75% { transform: translateX(15px) }
+    100% { transform: translateX(0) }
+}
+
+.pop {
+    animation: popCenter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popCenter {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.feedback {
+    font-size: 1.8rem;
+    min-height: 45px;
+    color: #636e72;
+    transition: all 0.3s ease;
+}
+
+.feedback.correct {
+    color: #e84393;
+    font-size: 2.2rem;
+    animation: bounce 0.5s;
+}
+
+.feedback.wrong {
+    color: #0984e3;
+    animation: horizontal-shaking 0.5s;
+}
